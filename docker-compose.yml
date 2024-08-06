@@ -1,0 +1,75 @@
+version: '3.7'
+
+services:
+  postgres:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: airflow
+      POSTGRES_PASSWORD: airflow
+      POSTGRES_DB: airflow
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:6
+
+  airflow-metadata:
+    image: apache/airflow:2.6.0
+    environment:
+      AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
+      AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
+      AIRFLOW__CORE__FERNET_KEY: 'GnGV8JtinYRQMV3QhHNgM0fUQjGe2sWDenGrvKUJQvo='
+      AIRFLOW__CORE__EXECUTOR: Local
+    depends_on:
+      - postgres
+    entrypoint: ["airflow", "init"]
+    command: ["--verbose"]
+    restart: "no"
+
+  airflow-webserver:
+    image: apache/airflow:2.6.0
+    environment:
+      AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
+      AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
+      AIRFLOW__CORE__FERNET_KEY: 'GnGV8JtinYRQMV3QhHNgM0fUQjGe2sWDenGrvKUJQvo='
+      AIRFLOW__CORE__EXECUTOR: Local
+      AIRFLOW_HOME: /opt/airflow
+    depends_on:
+      - postgres
+      - redis
+    ports:
+      - "8080:8080"
+    command: webserver
+
+  airflow-scheduler:
+    image: apache/airflow:2.6.0
+    environment:
+      AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
+      AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
+      AIRFLOW__CORE__FERNET_KEY: 'GnGV8JtinYRQMV3QhHNgM0fUQjGe2sWDenGrvKUJQvo='
+      AIRFLOW__CORE__EXECUTOR: Local
+      AIRFLOW_HOME: /opt/airflow
+    depends_on:
+      - postgres
+      - redis
+      - airflow-metadata
+    command: scheduler
+
+  airflow-worker:
+    image: apache/airflow:2.6.0
+    environment:
+      AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
+      AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
+      AIRFLOW__CORE__FERNET_KEY: 'GnGV8JtinYRQMV3QhHNgM0fUQjGe2sWDenGrvKUJQvo='
+      AIRFLOW__CORE__EXECUTOR: Local
+      AIRFLOW_HOME: /opt/airflow
+    depends_on:
+      - postgres
+      - redis
+      - airflow-metadata
+    command: airflow celery worker -A airflow --concurrency 5
+
+volumes:
+  postgres_data:
+  airflow_logs:
+  airflow_data:
