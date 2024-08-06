@@ -19,10 +19,10 @@ context = {
     'postgres_password': 'airflow',
     'postgres_db': 'airflow',
     'fernet_key': fernet_key,
-    'executor': 'Local',
+    'executor': 'airflow.executors.local.LocalExecutor',
     'load_examples': 'false',
     'dags_are_paused': 'true',
-    'num_workers': 5
+    'worker_concurrency': 5
 }
 
 # Render the template with the context
