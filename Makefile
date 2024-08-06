@@ -13,8 +13,12 @@ all: up
 build:
 	$(DOCKER_COMPOSE_CMD) build
 
+# Generate Docker Compose file
+generate: 
+	python3 generate_docker_compose.py
+
 # Start all services
-up: build
+up: generate build
 	$(DOCKER_COMPOSE_CMD) up -d
 
 # Stop and remove all services
