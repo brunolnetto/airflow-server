@@ -19,7 +19,7 @@ context = {
     'postgres_password': 'airflow',
     'postgres_db': 'airflow',
     'fernet_key': fernet_key,
-    'executor': 'LocalExecutor',
+    'executor': 'CeleryExecutor',
     'load_examples': 'false',
     'dags_are_paused': 'true',
     'num_workers': 5
