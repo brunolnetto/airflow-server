@@ -1,8 +1,9 @@
-version: '3.7'
+version: '3.8'
 
 services:
   postgres:
     image: postgres:13
+    container_name: airflow-db
     environment:
       POSTGRES_USER: airflow
       POSTGRES_PASSWORD: airflow
@@ -11,65 +12,104 @@ services:
       - postgres_data:/var/lib/postgresql/data
 
   redis:
+    container_name: airflow-redis
     image: redis:6
-
-  airflow-metadata:
-    image: apache/airflow:2.6.0
-    environment:
-      AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
-      AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
-      AIRFLOW__CORE__FERNET_KEY: 'GnGV8JtinYRQMV3QhHNgM0fUQjGe2sWDenGrvKUJQvo='
-      AIRFLOW__CORE__EXECUTOR: Local
-    depends_on:
-      - postgres
-    entrypoint: ["airflow", "init"]
-    command: ["--verbose"]
-    restart: "no"
 
   airflow-webserver:
     image: apache/airflow:2.6.0
+    container_name: airflow-webserver
     environment:
-      AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
       AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
-      AIRFLOW__CORE__FERNET_KEY: 'GnGV8JtinYRQMV3QhHNgM0fUQjGe2sWDenGrvKUJQvo='
-      AIRFLOW__CORE__EXECUTOR: Local
-      AIRFLOW_HOME: /opt/airflow
+      AIRFLOW__CORE__FERNET_KEY: 'k_ALZvzyVesrwE4I0vK-dJYN2xhSbmwFFWqFfem7T4c='
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'true'
     depends_on:
       - postgres
       - redis
     ports:
       - "8080:8080"
-    command: webserver
+    command: airflow db init && airflow webserver
 
   airflow-scheduler:
     image: apache/airflow:2.6.0
+    container_name: airflow-scheduler
     environment:
-      AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
       AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
-      AIRFLOW__CORE__FERNET_KEY: 'GnGV8JtinYRQMV3QhHNgM0fUQjGe2sWDenGrvKUJQvo='
-      AIRFLOW__CORE__EXECUTOR: Local
-      AIRFLOW_HOME: /opt/airflow
+      AIRFLOW__CORE__FERNET_KEY: 'k_ALZvzyVesrwE4I0vK-dJYN2xhSbmwFFWqFfem7T4c='
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
     depends_on:
       - postgres
       - redis
-      - airflow-metadata
-    command: scheduler
+    command: airflow db init && airflow scheduler
 
-  airflow-worker:
+  
+  airflow-worker-0:
     image: apache/airflow:2.6.0
+    container_name: airflow-worker-0
     environment:
-      AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
       AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
-      AIRFLOW__CORE__FERNET_KEY: 'GnGV8JtinYRQMV3QhHNgM0fUQjGe2sWDenGrvKUJQvo='
-      AIRFLOW__CORE__EXECUTOR: Local
-      AIRFLOW_HOME: /opt/airflow
+      AIRFLOW__CORE__FERNET_KEY: 'k_ALZvzyVesrwE4I0vK-dJYN2xhSbmwFFWqFfem7T4c='
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
     depends_on:
       - postgres
       - redis
-      - airflow-metadata
-    command: airflow celery worker -A airflow --concurrency 5
+    command: airflow celery worker
+  
+  airflow-worker-1:
+    image: apache/airflow:2.6.0
+    container_name: airflow-worker-1
+    environment:
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
+      AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
+      AIRFLOW__CORE__FERNET_KEY: 'k_ALZvzyVesrwE4I0vK-dJYN2xhSbmwFFWqFfem7T4c='
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+    depends_on:
+      - postgres
+      - redis
+    command: airflow celery worker
+  
+  airflow-worker-2:
+    image: apache/airflow:2.6.0
+    container_name: airflow-worker-2
+    environment:
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
+      AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
+      AIRFLOW__CORE__FERNET_KEY: 'k_ALZvzyVesrwE4I0vK-dJYN2xhSbmwFFWqFfem7T4c='
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+    depends_on:
+      - postgres
+      - redis
+    command: airflow celery worker
+  
+  airflow-worker-3:
+    image: apache/airflow:2.6.0
+    container_name: airflow-worker-3
+    environment:
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
+      AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
+      AIRFLOW__CORE__FERNET_KEY: 'k_ALZvzyVesrwE4I0vK-dJYN2xhSbmwFFWqFfem7T4c='
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+    depends_on:
+      - postgres
+      - redis
+    command: airflow celery worker
+  
+  airflow-worker-4:
+    image: apache/airflow:2.6.0
+    container_name: airflow-worker-4
+    environment:
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
+      AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
+      AIRFLOW__CORE__FERNET_KEY: 'k_ALZvzyVesrwE4I0vK-dJYN2xhSbmwFFWqFfem7T4c='
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+    depends_on:
+      - postgres
+      - redis
+    command: airflow celery worker
+  
 
 volumes:
   postgres_data:
-  airflow_logs:
-  airflow_data:

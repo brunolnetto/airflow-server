@@ -1,6 +1,9 @@
+version: '3.8'
+
 services:
   postgres:
     image: postgres:{{ postgres_version }}
+    container_name: airflow-db
     environment:
       POSTGRES_USER: {{ postgres_user }}
       POSTGRES_PASSWORD: {{ postgres_password }}
@@ -9,13 +12,14 @@ services:
       - postgres_data:/var/lib/postgresql/data
 
   redis:
+    container_name: airflow-redis
     image: redis:{{ redis_version }}
 
   airflow-webserver:
     image: apache/airflow:{{ airflow_version }}
-    entrypoint: ["/entrypoint.sh"]
+    container_name: airflow-webserver
     environment:
-      AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://{{ postgres_user }}:{{ postgres_password }}@postgres/{{ postgres_db }}
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://{{ postgres_user }}:{{ postgres_password }}@postgres/{{ postgres_db }}
       AIRFLOW__CORE__LOAD_EXAMPLES: '{{ load_examples }}'
       AIRFLOW__CORE__FERNET_KEY: '{{ fernet_key }}'
       AIRFLOW__CORE__EXECUTOR: {{ executor }}
@@ -25,27 +29,27 @@ services:
       - redis
     ports:
       - "8080:8080"
-    command: webserver
+    command: airflow db init && airflow webserver
 
   airflow-scheduler:
     image: apache/airflow:{{ airflow_version }}
-    entrypoint: ["/entrypoint.sh"]
+    container_name: airflow-scheduler
     environment:
-      AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://{{ postgres_user }}:{{ postgres_password }}@postgres/{{ postgres_db }}
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://{{ postgres_user }}:{{ postgres_password }}@postgres/{{ postgres_db }}
       AIRFLOW__CORE__LOAD_EXAMPLES: '{{ load_examples }}'
       AIRFLOW__CORE__FERNET_KEY: '{{ fernet_key }}'
       AIRFLOW__CORE__EXECUTOR: {{ executor }}
     depends_on:
       - postgres
       - redis
-    command: scheduler
+    command: airflow db init && airflow scheduler
 
   {% for i in range(num_workers) %}
   airflow-worker-{{ i }}:
     image: apache/airflow:{{ airflow_version }}
-    entrypoint: ["/entrypoint.sh"]
+    container_name: airflow-worker-{{ i }}
     environment:
-      AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://{{ postgres_user }}:{{ postgres_password }}@postgres/{{ postgres_db }}
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://{{ postgres_user }}:{{ postgres_password }}@postgres/{{ postgres_db }}
       AIRFLOW__CORE__LOAD_EXAMPLES: '{{ load_examples }}'
       AIRFLOW__CORE__FERNET_KEY: '{{ fernet_key }}'
       AIRFLOW__CORE__EXECUTOR: {{ executor }}
