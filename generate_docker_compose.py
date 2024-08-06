@@ -22,7 +22,7 @@ context = {
     'executor': 'CeleryExecutor',
     'load_examples': 'false',
     'dags_are_paused': 'true',
-    'num_workers': 5
+    'num_workers': 2
 }
 
 # Render the template with the context
