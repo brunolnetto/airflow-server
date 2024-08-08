@@ -15,6 +15,7 @@ build:
 
 # Start all services
 up: build
+	$(DOCKER_COMPOSE_CMD) up airflow-init
 	$(DOCKER_COMPOSE_CMD) up -d
 
 # Stop and remove all services
