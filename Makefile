@@ -17,21 +17,21 @@ create-folders:
 
 # Initialize the environment file
 init-env:
-	echo -e "AIRFLOW_UID=$(shell id -u)" > $(ENV_FILE)
-	echo -e "POSTGRES_USER=airflow" >> $(ENV_FILE)
-	echo -e "POSTGRES_PASSWORD=airflow" >> $(ENV_FILE)
-	echo -e "POSTGRES_DB=airflow" >> $(ENV_FILE)
-	echo -e "AIRFLOW__CORE__FERNET_KEY=UKMzEm3yIuFYEq1y3-2FxPNWSVwRASpahmQ9kQfEr8E=" >> $(ENV_FILE)
-	echo -e "AIRFLOW__CORE__EXECUTOR=CeleryExecutor" >> $(ENV_FILE)
-	echo -e "AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION=True" >> $(ENV_FILE)
-	echo -e "AIRFLOW__CORE__LOAD_EXAMPLES=False" >> $(ENV_FILE)
-	echo -e "AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres/airflow" >> $(ENV_FILE)
-	echo -e "AIRFLOW__DATABASE__LOAD_DEFAULT_CONNECTIONS=False" >> $(ENV_FILE)
-	echo -e "LIMTER_STORAGE_URI=redis://redis:6379/0" >> $(ENV_FILE)
-	echo -e "_AIRFLOW_DB_MIGRATE=True" >> $(ENV_FILE)
-	echo -e "_AIRFLOW_WWW_USER_CREATE=True" >> $(ENV_FILE)
-	echo -e "_AIRFLOW_WWW_USER_USERNAME=airflow" >> $(ENV_FILE)
-	echo -e "_AIRFLOW_WWW_USER_PASSWORD=airflow" >> $(ENV_FILE)
+	echo "AIRFLOW_UID=$(shell id -u)" > $(ENV_FILE)
+	echo "POSTGRES_USER=airflow" >> $(ENV_FILE)
+	echo "POSTGRES_PASSWORD=airflow" >> $(ENV_FILE)
+	echo "POSTGRES_DB=airflow" >> $(ENV_FILE)
+	echo "AIRFLOW__CORE__FERNET_KEY=UKMzEm3yIuFYEq1y3-2FxPNWSVwRASpahmQ9kQfEr8E=" >> $(ENV_FILE)
+	echo "AIRFLOW__CORE__EXECUTOR=CeleryExecutor" >> $(ENV_FILE)
+	echo "AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION=True" >> $(ENV_FILE)
+	echo "AIRFLOW__CORE__LOAD_EXAMPLES=False" >> $(ENV_FILE)
+	echo "AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres/airflow" >> $(ENV_FILE)
+	echo "AIRFLOW__DATABASE__LOAD_DEFAULT_CONNECTIONS=False" >> $(ENV_FILE)
+	echo "LIMTER_STORAGE_URI=redis://redis:6379/0" >> $(ENV_FILE)
+	echo "_AIRFLOW_DB_MIGRATE=True" >> $(ENV_FILE)
+	echo "_AIRFLOW_WWW_USER_CREATE=True" >> $(ENV_FILE)
+	echo "_AIRFLOW_WWW_USER_USERNAME=airflow" >> $(ENV_FILE)
+	echo "_AIRFLOW_WWW_USER_PASSWORD=airflow" >> $(ENV_FILE)
 
 # Initialize the Airflow database
 airflow-init:
