@@ -15,14 +15,7 @@ context = {
     'postgres_version': '13',
     'redis_version': '6',
     'airflow_version': '2.6.0',
-    'postgres_user': 'airflow',
-    'postgres_password': 'airflow',
-    'postgres_db': 'airflow',
-    'fernet_key': fernet_key,
-    'executor': 'CeleryExecutor',
-    'load_examples': 'false',
-    'dags_are_paused': 'true',
-    'num_workers': 2
+    'num_workers': 5
 }
 
 # Render the template with the context
