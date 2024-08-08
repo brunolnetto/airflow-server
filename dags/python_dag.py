@@ -1,22 +1,23 @@
 from airflow import DAG
+from airflow.utils.dates import days_ago
 from airflow.operators.empty import EmptyOperator
 from airflow.operators.bash import BashOperator
-from datetime import datetime, timedelta
+
+from datetime import datetime 
 
 with DAG(
-    dag_id='first_sample_dag',
+    dag_id='python_dag',
     start_date=datetime(2023, 1, 1),  # Set a past start date
     schedule_interval='*/2 * * * *',
-    catchup=False
+    catchup=False,
 ) as dag:
-
     start_task = EmptyOperator(
         task_id='start'
     )
 
     print_hello_world = BashOperator(
         task_id='print_hello_world',
-        bash_command='echo "HelloWorld!"'
+        bash_command='python -c "print(\'Hello World!\')"'
     )
 
     end_task = EmptyOperator(
