@@ -1,5 +1,5 @@
 # Base image
-FROM apache/airflow:2.7.1-python3.10
+FROM apache/airflow:2.9.3-python3.10
 
 # Switch to root user
 USER root
